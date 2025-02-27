@@ -1,5 +1,7 @@
 import React from 'react';
 import { useCustomers } from '../../hooks/useCustomers';
+import { DEFAULT_AVATAR } from '../config/assets';
+import Avatar from '../../components/common/Avatar';
 
 const AdminCustomers: React.FC = () => {
   const { customers, loading, error } = useCustomers();
@@ -54,10 +56,10 @@ const AdminCustomers: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={customer.avatar_url || '/default-avatar.png'}
-                          alt=""
+                        <Avatar
+                          src={customer.avatar_url}
+                          alt={`${customer.full_name}'s avatar`}
+                          size="md"
                         />
                       </div>
                       <div className="ml-4">

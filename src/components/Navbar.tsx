@@ -4,6 +4,8 @@ import { useStore } from '../store';
 import { useAuthorization } from '../hooks/useAuthorization';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { DEFAULT_AVATAR } from '../config/assets';
+import Avatar from './common/Avatar';
 
 const Navbar: React.FC = () => {
   const cart = useStore((state) => state.cart);
@@ -91,13 +93,10 @@ const Navbar: React.FC = () => {
                       onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                       className="flex items-center gap-2 hover:text-secondary"
                     >
-                      <img
-                        className="h-8 w-8 rounded-full border-2 border-white"
-                        src={user?.user_metadata?.avatar_url || '/default-avatar.png'}
-                        alt=""
-                        onError={(e) => {
-                          e.currentTarget.src = '/default-avatar.png';
-                        }}
+                      <Avatar
+                        src={user?.avatar_url}
+                        alt={`${user?.user_metadata?.full_name || 'User'}'s avatar`}
+                        size="sm"
                       />
                       <span className="hidden md:block">
                         {user.user_metadata?.full_name || user.email}

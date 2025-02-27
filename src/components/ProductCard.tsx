@@ -10,6 +10,11 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const addToCart = useStore((state) => state.addToCart);
 
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Stop event propagation to prevent navigation
+    addToCart(product);
+  };
+
   const conditionColor = {
     new: 'bg-green-100 text-green-800',
     used: 'bg-yellow-100 text-yellow-800',
@@ -17,54 +22,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   }[product.condition];
 
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="bg-white border rounded-lg overflow-hidden hover:shadow-lg transition-shadow block"
-    >
-      <div className="aspect-w-1 aspect-h-1 bg-gray-100">
-        {product.images[0] ? (
+    <Link to={`/products/${product.id}`} className="group">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="aspect-w-1 aspect-h-1 bg-gray-200">
           <img
-            src={product.images[0]}
+            src={product.images[0] || '/images/default-product.png'}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-center object-cover group-hover:opacity-75"
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <svg className="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-        )}
-      </div>
-      
-      <div className="p-4 space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-gray-900">
-            ${product.price.toFixed(2)}
-          </span>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${conditionColor}`}>
-            {product.condition}
-          </span>
         </div>
-        
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
-          {product.name}
-        </h3>
-        
-        <p className="text-sm text-gray-500 line-clamp-2">
-          {product.description}
-        </p>
-        
-        <div className="pt-2">
+        <div className="p-4 space-y-2">
+          <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
+          <p className="text-lg font-bold text-gray-900">${product.price.toFixed(2)}</p>
           <button
-            onClick={() => addToCart(product)}
-            disabled={product.stock === 0}
             className="w-full bg-primary text-white rounded-lg py-2 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            // Stop event propagation to prevent navigation when clicking the button
-            onClick={(e) => {
-              e.preventDefault();
-              addToCart(product);
-            }}
+            onClick={handleAddToCart}
+            disabled={product.stock <= 0}
           >
             {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
           </button>
