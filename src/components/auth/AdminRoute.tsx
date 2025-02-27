@@ -27,7 +27,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
 
   // Redirect to home if not admin
   if (!can('viewAdminDashboard')) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

@@ -72,20 +72,22 @@ export const useStore = create<CartState>((set) => ({
       return { cart: newCart };
     }),
   removeFromCart: (productId) =>
-    set((state) => {
+    set((state: CartState): Partial<CartState> => {
       const newCart = state.cart.filter((item) => item.id !== productId);
       saveCart(newCart);
       return { cart: newCart };
     }),
   updateQuantity: (productId, quantity) =>
-    set((state) => {
+    set((state: CartState): Partial<CartState> => {
       if (quantity === 0) {
-        return state.removeFromCart(productId);
+        const newCart = state.cart.filter((item) => item.id !== productId);
+        saveCart(newCart);
+        return { cart: newCart };
       }
       
       const product = state.cart.find((item) => item.id === productId);
       if (!product || quantity > product.stock) {
-        return state;
+        return { cart: state.cart };
       }
       
       const newCart = state.cart.map((item) =>
@@ -95,16 +97,11 @@ export const useStore = create<CartState>((set) => ({
       saveCart(newCart);
       return { cart: newCart };
     }),
-  clearCart: () => {
-    if (isStorageAvailable()) {
-      try {
-        localStorage.removeItem('cart');
-      } catch (error) {
-        console.warn('Failed to clear cart from storage:', error);
-      }
-    }
-    set({ cart: [] });
-  },
+  clearCart: () =>
+    set((state: CartState): CartState => ({
+      ...state,
+      cart: []
+    })),
   calculateShipping: (subtotal: number) => {
     // Free shipping over $100
     return subtotal >= 100 ? 0 : 9.99;

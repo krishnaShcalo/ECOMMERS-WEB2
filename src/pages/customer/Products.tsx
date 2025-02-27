@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../hooks/useProducts';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const sortOptions = [
   { label: 'Featured', value: 'featured' },
@@ -21,7 +21,7 @@ const priceRanges = [
 
 const ProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { products, loading, error, isError } = useProducts();
+  const { products, loading, error } = useProducts();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
 
   const sortBy = searchParams.get('sort') || 'featured';

@@ -6,7 +6,7 @@ import { useProducts } from '../../hooks/useProducts';
 const ProductDetail: React.FC = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const { products, loading, error } = useProducts();
+  const { products, loading } = useProducts();
   const addToCart = useStore((state) => state.addToCart);
   const [selectedImage, setSelectedImage] = useState(0);
   

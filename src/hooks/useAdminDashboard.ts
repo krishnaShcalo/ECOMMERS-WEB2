@@ -1,6 +1,31 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
+type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled';
+
+interface OrderStatusCounts {
+  pending: number;
+  processing: number;
+  completed: number;
+  cancelled: number;
+}
+
+interface MonthlySale {
+  month: string;
+  total: number;
+}
+
+interface OrderWithUser {
+  id: string;
+  total: number;
+  status: OrderStatus;
+  created_at: string;
+  users: {
+    first_name: string;
+    last_name: string;
+  };
+}
+
 interface DashboardStats {
   totalSales: number;
   totalOrders: number;
@@ -17,10 +42,7 @@ interface DashboardStats {
     completed: number;
     cancelled: number;
   };
-  monthlySales: {
-    month: string;
-    total: number;
-  }[];
+  monthlySales: MonthlySale[];
 }
 
 export function useAdminDashboard() {
@@ -55,7 +77,7 @@ export function useAdminDashboard() {
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
         // Fetch all orders
-        const { data: orders, error: ordersError } = await supabase
+        const { data: ordersData, error: ordersError } = await supabase
           .from('orders')
           .select(`
             id,
@@ -71,6 +93,8 @@ export function useAdminDashboard() {
           .gte('created_at', thirtyDaysAgo.toISOString());
 
         if (ordersError) throw ordersError;
+
+        const orders = (ordersData || []) as unknown as OrderWithUser[];
 
         // Fetch total customers
         const { count: customersCount, error: customersError } = await supabase
@@ -88,8 +112,9 @@ export function useAdminDashboard() {
         if (productsError) throw productsError;
 
         // Calculate order statistics
-        const ordersByStatus = orders?.reduce((acc, order) => {
-          acc[order.status] = (acc[order.status] || 0) + 1;
+        const orderStatusCounts = orders.reduce((acc: OrderStatusCounts, order) => {
+          const status = order.status as OrderStatus;
+          acc[status] = (acc[status] || 0) + 1;
           return acc;
         }, {
           pending: 0,
@@ -99,7 +124,7 @@ export function useAdminDashboard() {
         });
 
         // Calculate monthly sales
-        const monthlySales = orders?.reduce((acc, order) => {
+        const monthlySales = orders?.reduce((acc: MonthlySale[], order) => {
           const month = new Date(order.created_at).toLocaleString('default', { month: 'short' });
           const existingMonth = acc.find(m => m.month === month);
           if (existingMonth) {
@@ -108,7 +133,7 @@ export function useAdminDashboard() {
             acc.push({ month, total: order.total });
           }
           return acc;
-        }, []);
+        }, [] as MonthlySale[]);
 
         // Calculate total sales and trends
         const totalSales = orders?.reduce((sum, order) => sum + (order.total || 0), 0) || 0;
@@ -138,7 +163,7 @@ export function useAdminDashboard() {
               `${order.users.first_name || ''} ${order.users.last_name || ''}`.trim() : 
               'Unknown'
           })) || [],
-          ordersByStatus,
+          ordersByStatus: orderStatusCounts,
           monthlySales
         });
 

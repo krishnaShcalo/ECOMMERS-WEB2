@@ -1,11 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables');
-  throw new Error('Missing required environment variables for Supabase');
+  console.warn('Missing Supabase environment variables');
 }
 
 console.log('Initializing Supabase client with URL:', supabaseUrl);
@@ -34,3 +33,12 @@ supabase
       console.log('Supabase connection successful');
     }
   });
+
+// Add this near the top of your main entry file
+if (import.meta.env.PROD) {
+  console.log('Environment check:', {
+    supabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+    supabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+    baseUrl: import.meta.env.BASE_URL,
+  });
+}

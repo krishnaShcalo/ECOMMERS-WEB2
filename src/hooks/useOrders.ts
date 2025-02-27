@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Order } from '../types';
-import { PostgrestError } from '@supabase/supabase-js';
 
-interface Order {
+export interface OrderWithUser {
   id: string;
   user_id: string;
   total: number;
-  status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   created_at: string;
   user?: {
     first_name: string;
@@ -17,7 +15,7 @@ interface Order {
 }
 
 export function useOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

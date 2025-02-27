@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useOrders } from '../../hooks/useOrders';
-import { useOrderDetails, OrderWithDetails } from '../../hooks/useOrderDetails';
+import { useOrderDetails } from '../../hooks/useOrderDetails';
 import OrderStatusBadge from '../../components/admin/OrderStatusBadge';
 import { supabase } from '../../lib/supabase';
 import { Order } from '../../types';
@@ -8,7 +8,7 @@ import { Order } from '../../types';
 const AdminOrders: React.FC = () => {
   const { orders, loading, error } = useOrders();
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-  const { order: orderDetails, loading: detailsLoading } = useOrderDetails(selectedOrder);
+  const { order: orderDetails, loading: detailsLoading } = useOrderDetails(selectedOrder || undefined);
   const [updateLoading, setUpdateLoading] = useState(false);
 
   const handleStatusUpdate = async (orderId: string, newStatus: Order['status']) => {
@@ -91,9 +91,8 @@ const AdminOrders: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      order.status === 'shipped' || order.status === 'delivered' ? 'bg-green-100 text-green-800' :
                       order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
                       {order.status}

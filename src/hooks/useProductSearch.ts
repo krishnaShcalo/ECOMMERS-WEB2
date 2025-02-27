@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useProducts } from './useProducts';
-import { Product } from '../types';
 
-interface FilterOptions {
+export interface FilterOptions {
   category?: string;
   condition?: 'new' | 'used' | 'refurbished';
   minPrice?: number;

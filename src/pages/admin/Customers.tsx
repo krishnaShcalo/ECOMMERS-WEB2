@@ -1,6 +1,5 @@
 import React from 'react';
 import { useCustomers } from '../../hooks/useCustomers';
-import { DEFAULT_AVATAR } from '../config/assets';
 import Avatar from '../../components/common/Avatar';
 
 const AdminCustomers: React.FC = () => {
@@ -58,13 +57,13 @@ const AdminCustomers: React.FC = () => {
                       <div className="flex-shrink-0 h-10 w-10">
                         <Avatar
                           src={customer.avatar_url}
-                          alt={`${customer.full_name}'s avatar`}
+                          alt={`${customer.first_name} ${customer.last_name}'s avatar`}
                           size="md"
                         />
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {customer.full_name}
+                          {`${customer.first_name} ${customer.last_name}`}
                         </div>
                       </div>
                     </div>

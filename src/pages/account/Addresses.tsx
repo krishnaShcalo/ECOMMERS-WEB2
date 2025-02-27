@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAddresses, Address } from '../../hooks/useAddresses';
 
 const Addresses: React.FC = () => {
-  const { addresses, loading, error, addAddress, updateAddress, deleteAddress, setDefaultAddress } = useAddresses();
+  const { addresses, loading, addAddress, updateAddress, deleteAddress, setDefaultAddress } = useAddresses();
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);

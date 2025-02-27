@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Product } from '../types';
 
 export interface ProductInput {
   name: string;
@@ -13,8 +12,7 @@ export interface ProductInput {
 }
 
 export function useAdminProducts() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const createProduct = async (product: ProductInput) => {
     try {
@@ -100,7 +98,6 @@ export function useAdminProducts() {
 
   return {
     loading,
-    error,
     createProduct,
     updateProduct,
     deleteProduct,
